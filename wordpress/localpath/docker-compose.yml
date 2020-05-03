@@ -1,0 +1,43 @@
+version: '2.0'
+services:
+        db:
+          image: 'mysql:5.7'
+          volumes:
+                - "./mysqldata:/var/lib/mysql"
+          networks:
+                - blog
+          ports:
+                - 3306:3306
+          environment:
+                - MYSQL_ROOT_PASSWORD=test
+                - MYSQL_DATABASE=wordpress
+                - MYSQL_USER=wp-user
+                - MYSQL_PASSWORD=testuser
+
+        adminer:
+          image: adminer
+          ports:
+                - 8080:8080
+          environment:
+                - ADMINER_DEFAULT_SERVER=db
+          networks:
+                - blog
+
+        web:
+          image: "wordpress:php7.2"
+          environment:
+                - WORDPRESS_DB_USER=wp-user
+                - WORDPRESS_DB_PASSWORD=testuser
+                - WORDPRESS_DB_NAME=wordpress
+                - WORDPRESS_DB_HOST=db
+          depends_on:
+                - db
+          volumes:
+                - "./files:/var/www/html"
+          networks:
+                - blog
+          ports:
+                - 80:80
+
+networks:
+  blog: {}
