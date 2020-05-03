@@ -1,0 +1,29 @@
+version: '2.0'
+
+services:
+  joomla:
+    image: "joomla:php7.2"
+    volumes:
+      - "./joomla-files:/var/www/html"
+    networks:
+      - joomla 
+    ports: 
+      - 80:80
+    restart: always 
+    environment:
+      - JOOMLA_DB_HOST=db
+      - JOOMLA_DB_PASSWORD=test
+  db:
+    image: "mysql:5.7"
+    volumes:
+      - "./database:/var/lib/mysql"
+    networks:
+      - joomla
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_DATABASE=joomla
+    restart: always
+networks:
+  joomla: {}
